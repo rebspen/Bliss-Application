@@ -13,7 +13,7 @@ function App() {
     <BrowserRouter>
     <Switch>
       <Route path="/questions" render={(props) => <Home {...props} />}/>
-      <Route path="/details/:search/:id" render={(props) => <Detail {...props} />} />
+      <Route path="/questions?query" render={(props) => <Home {...props} />} />
       <Route path="/" component={List} />
     </Switch>
     </BrowserRouter>

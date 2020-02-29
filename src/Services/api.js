@@ -11,11 +11,21 @@ export const health = async function() {
 };
 
 export const list = async function(search) {
+  console.log("searchterm NEW SEARCH", typeof search, search)
   try {
-    console.log("in api", search, search.split("=")[0])§
-    if()
-    const response = await axios.get(`https://private-bbbe9-blissrecruitmentapi.apiary-mock.com/questions?${search}limit=10&offset=&`);
-    return response.data;
+    if(typeof search === "string"){
+      console.log("api1")
+      const response = await axios.get(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/questions?${search}&limit=10`);
+      return response.data;
+    } else if (Number.isInteger(search)){
+      console.log("api2")
+      const response = await axios.get(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/questions/${search}`);
+      return response.data;
+    } else {
+      console.log("api3")
+      const response = await axios.get(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/questions`);
+      return response.data;
+    }
   } catch (error) {
     console.log('There was an error in async list load service');
     throw error;

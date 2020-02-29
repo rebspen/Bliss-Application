@@ -11,33 +11,47 @@ class Home extends Component {
       serverChecking: true,
       serverHealthy: false,
       questions: [],
-      search: ""
+      question: [],
+      search: "",
+      multiple: true,
+      single: false
     };
+    this.updateSearch = this.updateSearch.bind(this);
   }
 
   async componentDidMount() {
-    const search = this.props.location.search
-    .split("")
-    .slice(1)
-    .join("");
-  console.log("split", search);
-  this.setState({
-    search: search
-  });
+    let search = this.props.location.search
+      .split("")
+      .slice(1)
+      .join("");
+    if (parseInt(search)) {
+      search = parseInt(search);
+    }
+    this.setState({
+      search: search
+    });
     try {
       const health = await healthCheck();
-      console.log("search params", this.state.search);
       if (health.status === "OK") {
         const list = await listQuestions(this.state.search);
-        const listKeysAdded = list.map(val => {
-          val.key = val.id;
-          return val;
-        });
-        this.setState({
-          serverChecking: false,
-          serverHealthy: true,
-          questions: listKeysAdded
-        });
+        console.log("API RETURNS", list);
+        if (!list.length) {
+          this.setState({
+            serverChecking: false,
+            serverHealthy: true,
+            multiple: false,
+            single: true,
+            questions: list
+          });
+        } else {
+          this.setState({
+            serverChecking: false,
+            serverHealthy: true,
+            questions: list,
+            multiple: true,
+            single: false
+          });
+        }
       } else {
         this.setState({
           serverChecking: false
@@ -49,35 +63,35 @@ class Home extends Component {
     }
   }
 
-  // async componentDidUpdate(){
-  //   try {
-  //     const list = await listQuestions();
-  //     if(this.state.serverHealthy){
-  //       // this.setState({
-  //       //  questions: list
-  //       // });
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     console.log("Error in service.");
-  //   }
-  // }
+  async updateSearch(id) {
+    const search = id;
+    console.log("apples", search);
+    this.setState({
+      search: search
+    });
+    try {
+      const list = await listQuestions(search);
+      this.setState({
+        questions: list,
+        multiple: false,
+        single: true
+      });
+      console.log("got the new questions");
+    } catch (error) {
+      console.log(error);
+      console.log("Error in service.");
+    }
+  }
 
   render() {
-    console.log(this.state.serverChecking);
-    console.log(this.state.serverHealthy);
-    console.log("Questions", this.state.questions);
     const questions = this.state.questions;
-    console.log("search", this.state.search);
-    const ans = this.state.search.split("=");
-    const route = !ans[1] ? "main" : ans[1];
-    console.log("route", ans, route);
-
+    console.log("questions", questions);
+    console.log("single?", this.state.single);
     return (
       <div>
         <h1>list</h1>
         {this.state.serverChecking && <h3>Checking Server Health</h3>}
-        {this.state.serverHealthy && (
+        {this.state.serverHealthy && this.state.multiple && (
           <div>
             {questions.map(val => {
               return (
@@ -86,19 +100,21 @@ class Home extends Component {
                   <p>
                     {val.id}. {val.question}
                   </p>
-                  <Link
-                    to={{
-                      pathname: `/details/${route}/${val.id}`,
-                      state: {
-                        question: val
-                      }
-                    }}
-                  >
-                    See details
-                  </Link>
+                  <button onClick={() => this.updateSearch(val.id)}>
+                    <Link to={`/questions?${val.id}`}>See details</Link>
+                  </button>
                 </div>
               );
             })}
+          </div>
+        )}
+        {this.state.single && (
+          <div>
+            {" "}
+            <img src={questions.image_url} />{" "}
+            <p>
+              {questions.id} {questions.question}
+            </p>
           </div>
         )}
       </div>
