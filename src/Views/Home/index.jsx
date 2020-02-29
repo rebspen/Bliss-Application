@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { health as healthCheck } from "../../Services/api";
 import { list as listQuestions } from "../../Services/api";
 import Question from "../../Components/Single";
+import Search from "../../Components/Search";
 
 class Home extends Component {
   constructor() {
@@ -17,6 +18,7 @@ class Home extends Component {
       single: false
     };
     this.updateSearch = this.updateSearch.bind(this);
+    this.search = this.search.bind(this);
   }
 
   async componentDidMount() {
@@ -71,11 +73,19 @@ class Home extends Component {
     });
     try {
       const list = await listQuestions(search);
-      this.setState({
-        questions: list,
-        multiple: false,
-        single: true
-      });
+     if (!list.length) {
+          this.setState({
+            multiple: false,
+            single: true,
+            questions: list
+          });
+        } else {
+          this.setState({
+            questions: list,
+            multiple: true,
+            single: false
+          });
+        }
       console.log("got the new questions");
     } catch (error) {
       console.log(error);
@@ -83,16 +93,26 @@ class Home extends Component {
     }
   }
 
+  search(data) {
+    this.setState({
+      search: data
+    });
+    const searchterm = "filter=" + data
+    this.updateSearch(searchterm)
+  }
+
   render() {
     const questions = this.state.questions;
     console.log("questions", questions);
     console.log("single?", this.state.single);
+    console.log("search", this.state.search)
     return (
       <div>
         <h1>list</h1>
         {this.state.serverChecking && <h3>Checking Server Health</h3>}
         {this.state.serverHealthy && this.state.multiple && (
           <div>
+            <Search search={this.search} />
             {questions.map(val => {
               return (
                 <div>
