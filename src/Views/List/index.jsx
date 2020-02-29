@@ -1,21 +1,19 @@
-import React, { Component } from 'react';
-import { Link } from "react-router-dom";
-// import { load as loadBeers } from './../../services/beers';
-
+import React, { Component } from "react";
+// import { Link } from "react-router-dom";
 
 class List extends Component {
   constructor() {
     super();
-    this.state = {
-      questions: []
-    };
+    this.state = {};
   }
 
-render() {
-  return (
-    <div className = "App">
-    <h1>list</h1>
-    </div>
+  render() {
+    console.log("Questions", this.state.questions);
+
+    return (
+      <div className="App">
+        <h1>Index</h1>
+      </div>
     );
   }
 }
