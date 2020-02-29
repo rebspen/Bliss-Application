@@ -1,13 +1,11 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 
-import { Link } from 'react-router-dom';
+function Question (props) {
+    console.log("Question PROPS", props)
+      return (
+      <hi>question details</hi>
+      );
+};
 
-export default function Question(value) {
-  return (
-    <div>
-      <p>{value.id}</p>
-      <p>{value.question}</p>
-    </div>
-   
-  );
-}
+export default Question

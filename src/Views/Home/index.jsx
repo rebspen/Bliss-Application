@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { health as healthCheck } from "../../Services/api";
 import { list as listQuestions } from "../../Services/api";
 import Question from "../../Components/Single";
@@ -16,18 +16,27 @@ class Home extends Component {
   }
 
   async componentDidMount() {
-    this.setState({
-      search: this.props.location.search
-    });
+    const search = this.props.location.search
+    .split("")
+    .slice(1)
+    .join("");
+  console.log("split", search);
+  this.setState({
+    search: search
+  });
     try {
       const health = await healthCheck();
       console.log("search params", this.state.search);
       if (health.status === "OK") {
-        const list = await listQuestions();
+        const list = await listQuestions(this.state.search);
+        const listKeysAdded = list.map(val => {
+          val.key = val.id;
+          return val;
+        });
         this.setState({
           serverChecking: false,
           serverHealthy: true,
-          questions: list,
+          questions: listKeysAdded
         });
       } else {
         this.setState({
@@ -60,6 +69,9 @@ class Home extends Component {
     console.log("Questions", this.state.questions);
     const questions = this.state.questions;
     console.log("search", this.state.search);
+    const ans = this.state.search.split("=");
+    const route = !ans[1] ? "main" : ans[1];
+    console.log("route", ans, route);
 
     return (
       <div>
@@ -70,9 +82,20 @@ class Home extends Component {
             {questions.map(val => {
               return (
                 <div>
+                  <img src={val.thumb_url} />
                   <p>
                     {val.id}. {val.question}
                   </p>
+                  <Link
+                    to={{
+                      pathname: `/details/${route}/${val.id}`,
+                      state: {
+                        question: val
+                      }
+                    }}
+                  >
+                    See details
+                  </Link>
                 </div>
               );
             })}

@@ -10,9 +10,11 @@ export const health = async function() {
   }
 };
 
-export const list = async function() {
+export const list = async function(search) {
   try {
-    const response = await axios.get(`https://private-bbbe9-blissrecruitmentapi.apiary-mock.com/questions?limit=10&offset=&filter=filter`);
+    console.log("in api", search, search.split("=")[0])§
+    if()
+    const response = await axios.get(`https://private-bbbe9-blissrecruitmentapi.apiary-mock.com/questions?${search}limit=10&offset=&`);
     return response.data;
   } catch (error) {
     console.log('There was an error in async list load service');
