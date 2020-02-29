@@ -31,3 +31,13 @@ export const list = async function(search) {
     throw error;
   }
 };
+
+export const share = async function(search,email) {
+  try {
+    const response = await axios.post(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/share?destination_email=${email}&content_url=http://localhost:3000/questions?${search}&limit=10`);
+    return response.data;
+  } catch (error) {
+    console.log('There was an error in async list load service');
+    throw error;
+  }
+};
