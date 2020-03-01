@@ -28,6 +28,7 @@ function SingleList(props) {
             <div>
               {" "}
               <p>{val.choice}</p>{" "}
+              {/* iteration 3 - vote on a question answer and send it via PATCH API call */}
               <button onClick={() => updateQuestion(ind)}>
                 {" "}
                 votes so far : {val.votes}

@@ -13,10 +13,12 @@ class Search extends Component {
   }
 
   componentDidMount(){
-    const edit = this.props.searchTerm.split("=")
-    this.setState({
-      search: edit[1]
-    })
+    if(this.props.searchTerm && this.props.searchTerm.includes("=")){
+      const edit = this.props.searchTerm.split("=")
+      this.setState({
+        search: edit[1]
+      })
+    }
   }
 
   handleInputChange(event) {

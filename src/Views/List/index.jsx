@@ -34,6 +34,7 @@ class List extends Component {
   }
 
   async componentDidMount() {
+    //getting search from url
     let search = this.props.location.search
       .split("")
       .slice(1)
@@ -48,13 +49,16 @@ class List extends Component {
       });
     }
     try {
+      //checking health
       const health = await healthCheck();
       if (health.status === "OK") {
+        //calling list
         const list = await listQuestions(
           this.state.offset,
           search
         );
         console.log("API RETURNS", list);
+        //setting different state if it is single or list return
         if (!list.length) {
           this.setState({
             serverChecking: false,
@@ -87,13 +91,16 @@ class List extends Component {
   }
 
   async updateSearch(id) {
+    //keeping search history for back navigation from detail to list
     if (typeof id === "string"){
       this.setState({
         history: [...this.state.history, id]
       });
     }
     try {
+      //questions api
       const list = await listQuestions(this.state.offset, id);
+       //setting different state if it is single or list return
       if (!list.length) {
         this.setState({
           multiple: false,
@@ -117,6 +124,7 @@ class List extends Component {
   }
 
   async seeMore() {
+    //seperate function as we have to adjust offset to load the new questions
     try {
       const list = await listQuestions(this.state.offset, this.state.searchTerm);
       if(list.length!== 0){
@@ -139,23 +147,27 @@ class List extends Component {
   }
 
   search(data) {
+    //searchbar input used to call a new API search
     const searchTerm = "filter=" + data;
     this.updateSearch(searchTerm);
   }
 
   handleInputChange(event) {
+    //email input updates
     this.setState({
       email: event.target.value
     });
   }
 
   return() {
-    const index = this.state.history.length - 2;
+    //navigate back to the previous search
+    const index = this.state.history.length - 1;
     const search = this.state.history[index];
     this.updateSearch(search);
   }
 
   async share() {
+    //share the url with a specific email
     try {
       const done = await shareScreen(this.state.email, this.state.offset, this.state.searchTerm);
       console.log(done);
@@ -166,6 +178,7 @@ class List extends Component {
   }
 
   handleRetry() {
+    //retry connection to the server
     this.setState({
       serverChecking: false,
       serverHealthy: true
@@ -177,6 +190,7 @@ class List extends Component {
     const questions = this.state.questions;
     console.log("HISTORY", this.state.history);
     console.log("Searchterm", this.state.searchTerm);
+    console.log("email", this.state.email);
 
     return (
       <div>
@@ -185,38 +199,47 @@ class List extends Component {
         {!this.state.serverChecking && !this.state.serverHealthy && (
           <Retry handler={this.handleRetry} />
         )}
+        {/* iteration 2 -loads list of Qs and prefils searchbar if URL had a filter=xxx inside */}
         {this.state.serverHealthy && this.state.multiple && this.state.questions && (
           <div>
             <Search searchTerm={this.state.searchTerm} search={this.search} />
+            {/* iteration 4 - sharescreen functionallity that calls to API POST request*/}
             <div>
               <input
               className="seeBtn"
                 type="text"
                 placeholder="Email..."
                 name="email"
+                value={this.state.email}
                 onChange={this.handleInputChange}
               />
               <button className="seeBtn" onClick={this.share}>Share search</button>
             </div>
             <SingleList data={questions} update={this.updateSearch} />
+            {/* loads 10 more questions based on current offset*/}
             <button className="seeBtn" onClick={this.seeMore}>
               See more questions
             </button>
           </div>
         )}
+         {/* if there are no more questions to show this will show*/}
         {this.state.serverHealthy && this.state.multiple && !this.state.questions && <div><h3>No more questions</h3> <button className= "seeBtn" onClick={this.return}>Go Back</button></div>}
+         {/* iteration 3 - detail screen - navigate by a link in teh list or through the url /question?num */}
         {this.state.single && (
           <div>
             <Question data={questions} update={this.updateSearch} />
+             {/* iteration 4 - share this questions url to a friend with the POST share screen API call*/}
             <div>
               <input
               className= "seeBtn"
                 type="text"
                 placeholder="Email..."
                 name="email"
+                value={this.state.email}
                 onChange={this.handleInputChange}
               />
               <button className= "seeBtn" onClick={this.share}>Share Question</button>
+              {/* go back to the main list and have the same filters applied as when you left - plain list if you had no filters */}
               {this.state.history && (
                 <button className= "seeBtn" onClick={this.return}>Go Back to List</button>
               )}
