@@ -11,7 +11,7 @@ export const health = async function() {
 };
 
 export const list = async function(offset, search) {
-  console.log("searchterm NEW SEARCH", search)
+  console.log("searchterm NEW SEARCH", offset,  search)
   try {
     if(typeof search === "string"){
       console.log("api1")

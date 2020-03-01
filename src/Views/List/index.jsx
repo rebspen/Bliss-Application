@@ -7,6 +7,7 @@ import Question from "../../Components/Single";
 import Search from "../../Components/Search";
 import Retry from "../../Components/Retry";
 import SingleList from "../../Components/SingleList";
+import "./style.css"
 
 class List extends Component {
   constructor() {
@@ -15,14 +16,12 @@ class List extends Component {
       serverChecking: true,
       serverHealthy: false,
       questions: [],
-      question: [],
       searchTerm: "",
       multiple: true,
       single: false,
       email: "",
       offset: 0,
       history: [],
-      practice: false
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.share = this.share.bind(this);
@@ -30,10 +29,10 @@ class List extends Component {
     this.search = this.search.bind(this);
     this.return = this.return.bind(this);
     this.handleRetry = this.handleRetry.bind(this);
+    this.seeMore = this.seeMore.bind(this);
   }
 
   async componentDidMount() {
-    console.log("props", this.props.location.search);
     let search = this.props.location.search
       .split("")
       .slice(1)
@@ -41,7 +40,7 @@ class List extends Component {
     if (parseInt(search)) {
       search = parseInt(search);
     }
-    console.log("SEARRRRRRRCH", search);
+    console.log("SEARRRRRRRCH mount", search);
     this.setState({
       searchTerm: search,
       history: [...this.state.history, search]
@@ -84,30 +83,52 @@ class List extends Component {
   }
 
   async updateSearch(id) {
-    console.log("fired");
-    const search = id;
-    this.setState({
-      searchTerm: search,
-      history: [...this.state.history, search]
-    });
+    if (typeof id === "string"){
+      this.setState({
+        history: [...this.state.history, id]
+      });
+    }
     try {
-      const list = await listQuestions(this.state.offset, search);
+      const list = await listQuestions(this.state.offset, id);
       if (!list.length) {
         this.setState({
           multiple: false,
           single: true,
-          questions: list
+          questions: list,
+          searchTerm: id
         });
       } else {
         this.setState({
           questions: list,
           multiple: true,
           single: false,
-          offset: (this.state.offset += 10)
+          searchTerm: id
         });
       }
       console.log("got the new questions");
     } catch (error) {
+      console.log(error);
+      console.log("Error in service.");
+    }
+  }
+
+  async seeMore() {
+    try {
+      const list = await listQuestions(this.state.offset, this.state.searchTerm);
+      if(list.length!== 0){
+        this.setState({
+          questions: list,
+          offset: (this.state.offset += 10)
+        });
+        console.log("got the next questions");
+      } else {
+        this.setState({
+          questions: "",
+          offset : this.state.offset -= 10
+        });
+      }
+      }
+      catch (error) {
       console.log(error);
       console.log("Error in service.");
     }
@@ -151,30 +172,30 @@ class List extends Component {
   render() {
     const questions = this.state.questions;
     console.log("HISTORY", this.state.history);
-    console.log("Search", this.state.searchTerm);
-    console.log("Practice", this.state.practice);
+    console.log("Searchterm", this.state.searchTerm);
 
     return (
       <div>
-        <Retry handler={this.handleRetry} />
-        {this.state.serverChecking && <h3>Checking Server Health</h3>}
+        {this.state.serverChecking && <h1>Checking Server Health</h1>}
+        {this.state.serverHealthy && this.state.multiple && !this.state.questions && <div><h3>No more questions</h3> <button className= "seeBtn" onClick={this.return}>Go Back</button></div>}
         {!this.state.serverChecking && !this.state.serverHealthy && (
           <Retry handler={this.handleRetry} />
         )}
-        {this.state.serverHealthy && this.state.multiple && (
+        {this.state.serverHealthy && this.state.multiple && this.state.questions && (
           <div>
             <Search search={this.search} />
             <div>
               <input
+              className="seeBtn"
                 type="text"
                 placeholder="Email..."
                 name="email"
                 onChange={this.handleInputChange}
               />
-              <button onClick={this.share}>Share search</button>
+              <button className="seeBtn" onClick={this.share}>Share search</button>
             </div>
             <SingleList data={questions} update={this.updateSearch} />
-            <button onClick={() => this.updateSearch(this.state.search)}>
+            <button className="seeBtn" onClick={this.seeMore}>
               See more questions
             </button>
           </div>
@@ -184,14 +205,15 @@ class List extends Component {
             <Question data={questions} update={this.updateSearch} />
             <div>
               <input
+              className= "seeBtn"
                 type="text"
                 placeholder="Email..."
                 name="email"
                 onChange={this.handleInputChange}
               />
-              <button onClick={this.share}>Share Question</button>
+              <button className= "seeBtn" onClick={this.share}>Share Question</button>
               {this.state.history[1] && (
-                <button onClick={this.return}>Go Back</button>
+                <button className= "seeBtn" onClick={this.return}>Go Back</button>
               )}
             </div>
           </div>

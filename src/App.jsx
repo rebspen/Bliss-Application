@@ -8,7 +8,6 @@ function App() {
   return (
     
     <div className="App">
-    Bliss Application
     <BrowserRouter>
     <Switch>
       <Route path="/questions" render={(props) => <List {...props} />}/>

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import "./style.css"
 
 class Home extends Component {
   constructor() {
@@ -8,12 +9,14 @@ class Home extends Component {
   }
 
   render() {
-    console.log("Questions", this.state.questions);
-
     return (
       <div className="App">
-        <h1>Index</h1>
-        <Link to = {"/questions"}>Question timeeeee</Link>
+        <h1>Welcome to this list of Super Unique Questions</h1>
+        <p>they are totally not just the same one</p>
+        <p>promise....</p>
+        <button className="qBtn">
+        <Link className="link" to = {"/questions"}>Question timeeeee</Link>
+        </button>
       </div>
     );
   }

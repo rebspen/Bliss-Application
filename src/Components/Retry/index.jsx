@@ -22,7 +22,6 @@ class Retry extends Component {
   }
   
   render() {
-    console.log("parent", this.props)
     return (
      <div>
        <h1>Oops - can't reach the server</h1>

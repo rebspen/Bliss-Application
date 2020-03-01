@@ -1,4 +1,22 @@
 body {
-  margin: 3em;
+  margin: 0;
 }
+
+html {
+  background-color: #232741;
+  min-height: 100%;
+  font-family:'Oxanium';
+  color: white;
+}
+
+/* button, input {
+  padding: 0.5em 1em;
+  border-radius: 12px;
+  border-color: white;
+  color: white;
+  background: transparent;
+  margin: 0.5em;
+} */
+
+
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { Component } from "react";
+import "./style.css"
 
 class Search extends Component {
   constructor(props) {
@@ -22,22 +23,23 @@ class Search extends Component {
     this.setState ({
       search:""
     });
-    console.log("props", this.props)
     this.props.search(event.target.value)
   }
   
 
   render() {
       return (
-        <div class = "search">
+        <div>
+        <label>Search Questions</label>
           <input 
+          className="search"
            type="text" 
            placeholder="Search..." 
            name="search"
            onChange={this.handleInputChange}
            value={this.state.search}
           /> 
-        <button onClick={this.dismiss}>Dismiss</button>
+        <button className="searchBtn" onClick={this.dismiss}>Dismiss</button>
         </div>
       )
   }
