@@ -6,7 +6,6 @@ import "./style.css"
 class Share extends Component {
   constructor(props) {
     super(props);
-    console.log("grapeeee", this.props)
     this.state = {
       email:"",
     };
@@ -22,7 +21,7 @@ class Share extends Component {
   }
 
   async share() {
-    console.log("at share" , this.props)
+    //console.log("at share" , this.props)
     try {
       const done = await shareScreen(this.props.email, this.props.offset,this.props.searchTerm);
       console.log(done);

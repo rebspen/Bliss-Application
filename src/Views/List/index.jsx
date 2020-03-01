@@ -42,7 +42,7 @@ class List extends Component {
     if (parseInt(search)) {
       search = parseInt(search);
     }
-    console.log("SEARRRRRRRCH mount", search);
+    //console.log("SEARRRRRRRCH mount", search);
     if (typeof search === "string"){
       this.setState({
         history: [...this.state.history, search]
@@ -57,7 +57,7 @@ class List extends Component {
           this.state.offset,
           search
         );
-        console.log("API RETURNS", list);
+        //console.log("API RETURNS", list);
         //setting different state if it is single or list return
         if (!list.length) {
           this.setState({
@@ -101,7 +101,7 @@ class List extends Component {
       //questions api
       const list = await listQuestions(this.state.offset, id);
        //setting different state if it is single or list return
-       console.log("list", list)
+       //console.log("list", list)
       if (!list.length) {
         this.setState({
           multiple: false,
@@ -117,7 +117,7 @@ class List extends Component {
           searchTerm: id
         });
       }
-      console.log("got the new questions");
+      //console.log("got the new questions");
     } catch (error) {
       console.log(error);
       console.log("Error in service.");
@@ -133,7 +133,7 @@ class List extends Component {
           questions: list,
           offset: (this.state.offset += 10)
         });
-        console.log("got the next questions");
+        //console.log("got the next questions");
       } else {
         this.setState({
           questions: "",
@@ -154,7 +154,7 @@ class List extends Component {
   }
 
   handleInputEmail(data) {
-    console.log("emaildata", data)
+    //console.log("emaildata", data)
     this.setState({
       email: data,
     })
@@ -189,9 +189,6 @@ class List extends Component {
 
   render() {
     const questions = this.state.questions;
-    console.log("HISTORY", this.state.history);
-    console.log("Searchterm", this.state.searchTerm);
-    console.log("email", this.state.email);
 
     return (
       <div>

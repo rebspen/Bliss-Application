@@ -14,18 +14,18 @@ export const health = async function() {
 
 //calling the questions based on the offset and searchterm - searchtem could be filter=xxx or number
 export const list = async function(offset, search) {
-  console.log("searchterm NEW SEARCH", offset,  search)
+  //console.log("searchterm NEW SEARCH", offset,  search)
   try {
     if(typeof search === "string"){
-      console.log("api1")
+      //console.log("api1")
       const response = await axios.get(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/questions?${search}&limit=10&offset=${offset}`);
       return response.data;
     } else if (Number.isInteger(search)){
-      console.log("api2")
+      //console.log("api2")
       const response = await axios.get(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/questions/${search}`);
       return response.data;
     } else {
-      console.log("api3")
+      //console.log("api3")
       const response = await axios.get(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/questions?limit=10&offset=${offset}`);
       return response.data;
     }

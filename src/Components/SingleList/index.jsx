@@ -9,7 +9,7 @@ function Question(props) {
       {questions.map(val => {
         return (
           <div className="list">
-            <img src={val.thumb_url} />
+            <img src={val.thumb_url} alt=""/>
             <div className="beside">
             <p>
               {val.id}. {val.question}

@@ -10,7 +10,7 @@ function SingleList(props) {
     const body = JSON.stringify(props.data);
     try {
       const done = await sendAnswer(props.data.id, body);
-      console.log("done", done, id);
+      console.log("done", done);
      props.update(data.id);
     } catch (error) {
       console.log(error);
@@ -21,7 +21,7 @@ function SingleList(props) {
   return (
     <div className ="single">
       <h1>{data.id}. {data.question}</h1>
-      <img src={data.image_url} />
+      <img src={data.image_url} alt=""/>
       <div>
         {data.choices.map((val, ind) => {
           return (

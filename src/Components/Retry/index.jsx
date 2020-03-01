@@ -12,7 +12,7 @@ class Retry extends Component {
     try {
       const health = await healthCheck();
       if (health.status === "OK") {
-        console.log("okay")
+        //console.log("okay")
         this.props.handler()
       }  
     } catch (error) {  
