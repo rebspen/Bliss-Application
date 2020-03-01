@@ -11,8 +11,8 @@ function App() {
     Bliss Application
     <BrowserRouter>
     <Switch>
-      <Route path="/questions" render={(props) => <Home {...props} />}/>
-      <Route path="/" component={List} />
+      <Route path="/questions" render={(props) => <List {...props} />}/>
+      <Route path="/" component={Home} />
     </Switch>
     </BrowserRouter>
     </div>

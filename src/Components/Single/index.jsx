@@ -1,7 +1,7 @@
 import React from "react";
 import { update as sendAnswer } from "../../Services/api";
 
-function Question(props) {
+function SingleList(props) {
   const data = props.data;
 
   console.log("HEREEEEEE", props)
@@ -45,4 +45,4 @@ function Question(props) {
       );
     }
     
-    export default Question;
+    export default SingleList;
