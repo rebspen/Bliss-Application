@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { health as healthCheck } from "../../Services/api";
 import { list as listQuestions } from "../../Services/api";
 import { share as shareScreen } from "../../Services/api";
-import Question from "../../Components/Single";
+import Question from "../../Components/Question";
 import Search from "../../Components/Search";
 import Retry from "../../Components/Retry";
+import Share from "../../Components/Share";
 import SingleList from "../../Components/SingleList";
 import ReactLoading from 'react-loading';
 import "./style.css"
@@ -24,7 +24,7 @@ class List extends Component {
       offset: 0,
       history: [],
     };
-    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleInputEmail = this.handleInputEmail.bind(this);
     this.share = this.share.bind(this);
     this.updateSearch = this.updateSearch.bind(this);
     this.search = this.search.bind(this);
@@ -153,11 +153,11 @@ class List extends Component {
     this.updateSearch(searchTerm);
   }
 
-  handleInputChange(event) {
-    //email input updates
+  handleInputEmail(data) {
+    console.log("emaildata", data)
     this.setState({
-      email: event.target.value
-    });
+      email: data,
+    })
   }
 
   return() {
@@ -205,17 +205,7 @@ class List extends Component {
           <div>
             <Search searchTerm={this.state.searchTerm} search={this.search} />
             {/* iteration 4 - sharescreen functionallity that calls to API POST request*/}
-            <div>
-              <input
-              className="seeBtn"
-                type="text"
-                placeholder="Email..."
-                name="email"
-                value={this.state.email}
-                onChange={this.handleInputChange}
-              />
-              <button className="seeBtn" onClick={this.share}>Share search</button>
-            </div>
+            <Share email={this.state.email} search={this.state.searchTerm} offset={this.state.offset} handle={this.handleInputEmail}/>
             <SingleList data={questions} update={this.updateSearch} />
             {/* loads 10 more questions based on current offset*/}
             <button className="seeBtn" onClick={this.seeMore}>
@@ -230,16 +220,8 @@ class List extends Component {
           <div>
             <Question data={questions} update={this.updateSearch} />
              {/* iteration 4 - share this questions url to a friend with the POST share screen API call*/}
+             <Share email={this.state.email} search={this.state.searchTerm} offset={this.state.offset} handle={this.handleInputEmail}/>
             <div>
-              <input
-              className= "seeBtn"
-                type="text"
-                placeholder="Email..."
-                name="email"
-                value={this.state.email}
-                onChange={this.handleInputChange}
-              />
-              <button className= "seeBtn" onClick={this.share}>Share Question</button>
               {/* go back to the main list and have the same filters applied as when you left - plain list if you had no filters */}
               {this.state.history && (
                 <button className= "seeBtn" onClick={this.return}>Go Back to List</button>

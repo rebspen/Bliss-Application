@@ -1,0 +1,11 @@
+.shBtn {
+  padding: 1em 2em;
+  border-radius: 12px;
+  border-color: white;
+  color: white;
+  background: transparent;
+}
+
+.share{
+  margin: 1em 0 0 0;
+}

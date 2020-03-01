@@ -39,8 +39,13 @@ export const list = async function(offset, search) {
 //sending the screen link to a friend over email
 export const share = async function(email,offset,search) {
   try {
-    const response = await axios.post(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/share?destination_email=${email}&content_url=http://localhost:3000/questions?${search}&limit=10`);
-    return response.data;
+    if(search){
+      const response = await axios.post(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/share?destination_email=${email}&content_url=http://localhost:3000/questions?${search}&limit=10&offset=${offset}`);
+      return response.data;
+    } else{
+      const response = await axios.post(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/share?destination_email=${email}&content_url=http://localhost:3000/questions?limit=10&offset=${offset}`);
+      return response.data; 
+    }
   } catch (error) {
     console.log('There was an error in async list load service');
     throw error;
