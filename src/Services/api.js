@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const health = async function() {
   try {
-    const response = await axios.get(`https://private-bbbe9-blissrecruitmentapi.apiary-mock.com/health`);
+    const response = await axios.get(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/health`);
     return response.data;
   } catch (error) {
     console.log('There was an error in async list load service');
@@ -10,8 +10,8 @@ export const health = async function() {
   }
 };
 
-export const list = async function(search, offset) {
-  console.log("searchterm NEW SEARCH", offset)
+export const list = async function(offset, search) {
+  console.log("searchterm NEW SEARCH", search)
   try {
     if(typeof search === "string"){
       console.log("api1")

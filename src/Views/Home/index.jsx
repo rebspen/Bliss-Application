@@ -5,6 +5,8 @@ import { list as listQuestions } from "../../Services/api";
 import { share as shareScreen } from "../../Services/api";
 import Question from "../../Components/Single";
 import Search from "../../Components/Search";
+import Retry from "../../Components/Retry";
+
 
 class Home extends Component {
   constructor() {
@@ -19,16 +21,19 @@ class Home extends Component {
       single: false,
       email: "",
       offset: 0,
-      history: []
+      history: [],
+      practice: false
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.share = this.share.bind(this);
     this.updateSearch = this.updateSearch.bind(this);
     this.search = this.search.bind(this);
     this.return = this.return.bind(this);
+    this.handleRetry = this.handleRetry.bind(this);
   }
 
   async componentDidMount() {
+    console.log("props", this.props.location.search )
     let search = this.props.location.search
       .split("")
       .slice(1)
@@ -45,8 +50,8 @@ class Home extends Component {
       const health = await healthCheck();
       if (health.status === "OK") {
         const list = await listQuestions(
-          this.state.searchTerm,
-          this.state.offset
+          this.state.offset,
+          this.state.searchTerm
         );
         console.log("API RETURNS", list);
         if (!list.length) {
@@ -79,13 +84,14 @@ class Home extends Component {
   }
 
   async updateSearch(id) {
+    console.log("fired")
     const search = id;
     this.setState({
       searchTerm: search,
       history: [...this.state.history, search]
     });
     try {
-      const list = await listQuestions(search, this.state.offset);
+      const list = await listQuestions(this.state.offset, search);
       if (!list.length) {
         this.setState({
           multiple: false,
@@ -119,30 +125,39 @@ class Home extends Component {
   }
 
   return() {
-    const index = this.state.history.length -2
-    const search = this.state.history[index]
-    console.log("BACK", search)
+    const index = this.state.history.length - 2;
+    const search = this.state.history[index];
     this.updateSearch(search);
-
   }
 
   async share() {
     try {
       const done = await shareScreen(this.state.searchTerm, this.state.email);
-      console.log(done, this.state.searchTerm, this.state.email);
     } catch (error) {
       console.log(error);
       console.log("Error in service.");
     }
   }
 
+  handleRetry(){
+    this.setState({
+      serverChecking: false,
+      serverHealthy: true,
+    })
+    this.updateSearch(this.state.searchTerm);
+  }
+
   render() {
     const questions = this.state.questions;
     console.log("HISTORY", this.state.history);
+    console.log("Search", this.state.searchTerm);
+    console.log("Practice", this.state.practice);
 
     return (
       <div>
+      <Retry handler = {this.handleRetry}/>
         {this.state.serverChecking && <h3>Checking Server Health</h3>}
+        {!this.state.serverChecking && !this.state.serverHealthy && <Retry handler = {this.handleRetry}/>}
         {this.state.serverHealthy && this.state.multiple && (
           <div>
             <Search search={this.search} />
@@ -177,7 +192,7 @@ class Home extends Component {
         )}
         {this.state.single && (
           <div>
-            <Question data={questions} />
+            <Question data={questions} update={this.updateSearch}/>
             <div>
               <input
                 type="text"
@@ -186,7 +201,9 @@ class Home extends Component {
                 onChange={this.handleInputChange}
               />
               <button onClick={this.share}>Share Question</button>
-              {this.state.history[1] &&  <button onClick={this.return}>Go Back</button>}
+              {this.state.history[1] && (
+                <button onClick={this.return}>Go Back</button>
+              )}
             </div>
           </div>
         )}

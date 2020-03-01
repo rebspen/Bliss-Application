@@ -1,9 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { update as sendAnswer } from "../../Services/api";
 
 function Question(props) {
   const data = props.data;
+
+  console.log("HEREEEEEE", props)
 
 
   async function updateQuestion(id) {
@@ -11,7 +12,8 @@ function Question(props) {
     const body = JSON.stringify(props.data);
     try {
       const done = await sendAnswer(props.data.id, body);
-      console.log("done", done);
+      console.log("done", done, id);
+      props.update(data.id)
     } catch (error) {
       console.log(error);
       console.log("Error in service.");

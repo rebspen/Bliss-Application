@@ -8,14 +8,21 @@ class Search extends Component {
       search:""
     };
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.dismiss = this.dismiss.bind(this);
   }
 
   handleInputChange(event) {
-    // console.log(event.target.value)
     this.setState({
       search: event.target.value
     })
-    // console.log(this.state)
+    this.props.search(event.target.value)
+  }
+
+  dismiss(event){
+    this.setState ({
+      search:""
+    });
+    console.log("props", this.props)
     this.props.search(event.target.value)
   }
   
@@ -28,7 +35,9 @@ class Search extends Component {
            placeholder="Search..." 
            name="search"
            onChange={this.handleInputChange}
+           value={this.state.search}
           /> 
+        <button onClick={this.dismiss}>Dismiss</button>
         </div>
       )
   }
