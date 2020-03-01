@@ -7,6 +7,7 @@ import Question from "../../Components/Single";
 import Search from "../../Components/Search";
 import Retry from "../../Components/Retry";
 import SingleList from "../../Components/SingleList";
+import ReactLoading from 'react-loading';
 import "./style.css"
 
 class List extends Component {
@@ -176,7 +177,7 @@ class List extends Component {
 
     return (
       <div>
-        {this.state.serverChecking && <h1>Checking Server Health</h1>}
+        {this.state.serverChecking && <div className="loader"><h1>Checking Server Health</h1> <ReactLoading type={'bubbles'} color={'white'} height={300} width={300} /></div>}
         {this.state.serverHealthy && this.state.multiple && !this.state.questions && <div><h3>No more questions</h3> <button className= "seeBtn" onClick={this.return}>Go Back</button></div>}
         {!this.state.serverChecking && !this.state.serverHealthy && (
           <Retry handler={this.handleRetry} />
