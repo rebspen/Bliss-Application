@@ -41,3 +41,13 @@ export const share = async function(search,email) {
     throw error;
   }
 };
+
+export const update = async function(id,body) {
+  try {
+    const response = await axios.put(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/questions/${id}`, body);
+    return response.data;
+  } catch (error) {
+    console.log('There was an error in async list load service');
+    throw error;
+  }
+};

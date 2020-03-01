@@ -6,7 +6,6 @@ import { share as shareScreen } from "../../Services/api";
 import Question from "../../Components/Single";
 import Search from "../../Components/Search";
 
-
 class Home extends Component {
   constructor() {
     super();
@@ -18,7 +17,7 @@ class Home extends Component {
       searchTerm: "",
       multiple: true,
       single: false,
-      email:""
+      email: ""
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.share = this.share.bind(this);
@@ -34,7 +33,7 @@ class Home extends Component {
     if (parseInt(search)) {
       search = parseInt(search);
     }
-    (console.log("SEARRRRRRRCH", search))
+    console.log("SEARRRRRRRCH", search);
     this.setState({
       searchTerm: search
     });
@@ -110,7 +109,7 @@ class Home extends Component {
   handleInputChange(event) {
     this.setState({
       email: event.target.value
-    })
+    });
   }
 
   async share() {
@@ -123,7 +122,6 @@ class Home extends Component {
     }
   }
 
- 
   render() {
     const questions = this.state.questions;
     console.log("questions", questions);
@@ -131,21 +129,20 @@ class Home extends Component {
     console.log("search", this.state.searchterm);
     return (
       <div>
-        <h1>list</h1>
         {this.state.serverChecking && <h3>Checking Server Health</h3>}
         {this.state.serverHealthy && this.state.multiple && (
           <div>
             <Search search={this.search} />
             <div>
-          <input 
-           type="text" 
-           placeholder="Email..." 
-           name="email"
-           onChange={this.handleInputChange}
-          /> 
-        <button onClick={this.share}>Share search</button>
-        </div>
-            
+              <input
+                type="text"
+                placeholder="Email..."
+                name="email"
+                onChange={this.handleInputChange}
+              />
+              <button onClick={this.share}>Share search</button>
+            </div>
+
             {questions.map(val => {
               return (
                 <div>
@@ -163,20 +160,16 @@ class Home extends Component {
         )}
         {this.state.single && (
           <div>
-            {" "}
-            <img src={questions.image_url} />{" "}
-            <p>
-              {questions.id} {questions.question}
-            </p>
+            <Question data={questions} />
             <div>
-          <input 
-           type="text" 
-           placeholder="Email..." 
-           name="email"
-           onChange={this.handleInputChange}
-          /> 
-        <button onClick={this.share}>Share search</button>
-        </div>
+              <input
+                type="text"
+                placeholder="Email..."
+                name="email"
+                onChange={this.handleInputChange}
+              />
+              <button onClick={this.share}>Share Question</button>
+            </div>
           </div>
         )}
       </div>
