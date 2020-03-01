@@ -6,10 +6,17 @@ class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      search:""
+      search: ""
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.dismiss = this.dismiss.bind(this);
+  }
+
+  componentDidMount(){
+    const edit = this.props.searchTerm.split("=")
+    this.setState({
+      search: edit[1]
+    })
   }
 
   handleInputChange(event) {

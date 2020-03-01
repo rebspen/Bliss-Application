@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+
+//checking the health of the server
 export const health = async function() {
   try {
     const response = await axios.get(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/health`);
@@ -10,6 +12,7 @@ export const health = async function() {
   }
 };
 
+//calling the questions based on the offset and searchterm - searchtem could be filter=xxx or number
 export const list = async function(offset, search) {
   console.log("searchterm NEW SEARCH", offset,  search)
   try {
@@ -32,7 +35,9 @@ export const list = async function(offset, search) {
   }
 };
 
-export const share = async function(search,email) {
+
+//sending the screen link to a friend over email
+export const share = async function(email,offset,search) {
   try {
     const response = await axios.post(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/share?destination_email=${email}&content_url=http://localhost:3000/questions?${search}&limit=10`);
     return response.data;
@@ -42,6 +47,7 @@ export const share = async function(search,email) {
   }
 };
 
+//updating the question votes with the answer that the user clicked
 export const update = async function(id,body) {
   try {
     const response = await axios.put(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/questions/${id}`, body);

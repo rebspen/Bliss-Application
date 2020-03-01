@@ -42,16 +42,17 @@ class List extends Component {
       search = parseInt(search);
     }
     console.log("SEARRRRRRRCH mount", search);
-    this.setState({
-      searchTerm: search,
-      history: [...this.state.history, search]
-    });
+    if (typeof search === "string"){
+      this.setState({
+        history: [...this.state.history, search]
+      });
+    }
     try {
       const health = await healthCheck();
       if (health.status === "OK") {
         const list = await listQuestions(
           this.state.offset,
-          this.state.searchTerm
+          search
         );
         console.log("API RETURNS", list);
         if (!list.length) {
@@ -60,7 +61,8 @@ class List extends Component {
             serverHealthy: true,
             multiple: false,
             single: true,
-            questions: list
+            questions: list,
+            searchTerm: search
           });
         } else {
           this.setState({
@@ -68,6 +70,7 @@ class List extends Component {
             serverHealthy: true,
             questions: list,
             multiple: true,
+            searchTerm: search,
             single: false,
             offset: (this.state.offset += 10)
           });
@@ -154,7 +157,7 @@ class List extends Component {
 
   async share() {
     try {
-      const done = await shareScreen(this.state.searchTerm, this.state.email);
+      const done = await shareScreen(this.state.email, this.state.offset, this.state.searchTerm);
       console.log(done);
     } catch (error) {
       console.log(error);
@@ -177,14 +180,14 @@ class List extends Component {
 
     return (
       <div>
+      {/* iteration 1 - checking the server health */}
         {this.state.serverChecking && <div className="loader"><h1>Checking Server Health</h1> <ReactLoading type={'bubbles'} color={'white'} height={300} width={300} /></div>}
-        {this.state.serverHealthy && this.state.multiple && !this.state.questions && <div><h3>No more questions</h3> <button className= "seeBtn" onClick={this.return}>Go Back</button></div>}
         {!this.state.serverChecking && !this.state.serverHealthy && (
           <Retry handler={this.handleRetry} />
         )}
         {this.state.serverHealthy && this.state.multiple && this.state.questions && (
           <div>
-            <Search search={this.search} />
+            <Search searchTerm={this.state.searchTerm} search={this.search} />
             <div>
               <input
               className="seeBtn"
@@ -201,6 +204,7 @@ class List extends Component {
             </button>
           </div>
         )}
+        {this.state.serverHealthy && this.state.multiple && !this.state.questions && <div><h3>No more questions</h3> <button className= "seeBtn" onClick={this.return}>Go Back</button></div>}
         {this.state.single && (
           <div>
             <Question data={questions} update={this.updateSearch} />
@@ -213,8 +217,8 @@ class List extends Component {
                 onChange={this.handleInputChange}
               />
               <button className= "seeBtn" onClick={this.share}>Share Question</button>
-              {this.state.history[1] && (
-                <button className= "seeBtn" onClick={this.return}>Go Back</button>
+              {this.state.history && (
+                <button className= "seeBtn" onClick={this.return}>Go Back to List</button>
               )}
             </div>
           </div>
