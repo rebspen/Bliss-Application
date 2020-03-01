@@ -101,6 +101,7 @@ class List extends Component {
       //questions api
       const list = await listQuestions(this.state.offset, id);
        //setting different state if it is single or list return
+       console.log("list", list)
       if (!list.length) {
         this.setState({
           multiple: false,
