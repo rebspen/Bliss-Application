@@ -17,12 +17,15 @@ class Home extends Component {
       searchTerm: "",
       multiple: true,
       single: false,
-      email: ""
+      email: "",
+      offset: 0,
+      history: []
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.share = this.share.bind(this);
     this.updateSearch = this.updateSearch.bind(this);
     this.search = this.search.bind(this);
+    this.return = this.return.bind(this);
   }
 
   async componentDidMount() {
@@ -35,12 +38,16 @@ class Home extends Component {
     }
     console.log("SEARRRRRRRCH", search);
     this.setState({
-      searchTerm: search
+      searchTerm: search,
+      history: [...this.state.history, search]
     });
     try {
       const health = await healthCheck();
       if (health.status === "OK") {
-        const list = await listQuestions(this.state.searchTerm);
+        const list = await listQuestions(
+          this.state.searchTerm,
+          this.state.offset
+        );
         console.log("API RETURNS", list);
         if (!list.length) {
           this.setState({
@@ -56,7 +63,8 @@ class Home extends Component {
             serverHealthy: true,
             questions: list,
             multiple: true,
-            single: false
+            single: false,
+            offset: (this.state.offset += 10)
           });
         }
       } else {
@@ -72,12 +80,12 @@ class Home extends Component {
 
   async updateSearch(id) {
     const search = id;
-    console.log("apples", search);
     this.setState({
-      searchTerm: search
+      searchTerm: search,
+      history: [...this.state.history, search]
     });
     try {
-      const list = await listQuestions(search);
+      const list = await listQuestions(search, this.state.offset);
       if (!list.length) {
         this.setState({
           multiple: false,
@@ -88,7 +96,8 @@ class Home extends Component {
         this.setState({
           questions: list,
           multiple: true,
-          single: false
+          single: false,
+          offset: (this.state.offset += 10)
         });
       }
       console.log("got the new questions");
@@ -99,9 +108,6 @@ class Home extends Component {
   }
 
   search(data) {
-    this.setState({
-      searchTerm: data
-    });
     const searchTerm = "filter=" + data;
     this.updateSearch(searchTerm);
   }
@@ -110,6 +116,14 @@ class Home extends Component {
     this.setState({
       email: event.target.value
     });
+  }
+
+  return() {
+    const index = this.state.history.length -2
+    const search = this.state.history[index]
+    console.log("BACK", search)
+    this.updateSearch(search);
+
   }
 
   async share() {
@@ -124,9 +138,8 @@ class Home extends Component {
 
   render() {
     const questions = this.state.questions;
-    console.log("questions", questions);
-    console.log("single?", this.state.single);
-    console.log("search", this.state.searchterm);
+    console.log("HISTORY", this.state.history);
+
     return (
       <div>
         {this.state.serverChecking && <h3>Checking Server Health</h3>}
@@ -156,6 +169,10 @@ class Home extends Component {
                 </div>
               );
             })}
+
+            <button onClick={() => this.updateSearch(this.state.search)}>
+              See more questions
+            </button>
           </div>
         )}
         {this.state.single && (
@@ -169,6 +186,7 @@ class Home extends Component {
                 onChange={this.handleInputChange}
               />
               <button onClick={this.share}>Share Question</button>
+              {this.state.history[1] &&  <button onClick={this.return}>Go Back</button>}
             </div>
           </div>
         )}

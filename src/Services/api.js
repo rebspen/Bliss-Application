@@ -10,12 +10,12 @@ export const health = async function() {
   }
 };
 
-export const list = async function(search) {
-  console.log("searchterm NEW SEARCH", typeof search, search)
+export const list = async function(search, offset) {
+  console.log("searchterm NEW SEARCH", offset)
   try {
     if(typeof search === "string"){
       console.log("api1")
-      const response = await axios.get(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/questions?${search}&limit=10`);
+      const response = await axios.get(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/questions?${search}&limit=10&offset=${offset}`);
       return response.data;
     } else if (Number.isInteger(search)){
       console.log("api2")
@@ -23,7 +23,7 @@ export const list = async function(search) {
       return response.data;
     } else {
       console.log("api3")
-      const response = await axios.get(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/questions`);
+      const response = await axios.get(`https://private-9a6a89-blissrecruitmentapi.apiary-mock.com/questions?limit=10&offset=${offset}`);
       return response.data;
     }
   } catch (error) {
